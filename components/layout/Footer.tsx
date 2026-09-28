@@ -2,6 +2,7 @@ import React from "react";
 import Link from "next/link";
 import { CATEGORIES } from "@/lib/constants/tools";
 import { Layers } from "lucide-react";
+import { InstallPwaButton } from "@/components/shared/InstallPwaButton";
 
 export function Footer() {
   const currentYear = 2026;
@@ -80,6 +81,9 @@ export function Footer() {
                 <Link href="/privacy" className="hover:text-primary transition-colors">
                   Privacy Policy
                 </Link>
+              </li>
+              <li>
+                <InstallPwaButton variant="footer" />
               </li>
             </ul>
           </div>

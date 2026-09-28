@@ -84,6 +84,7 @@ export function Navbar() {
               {link.name}
             </Link>
           ))}
+          <InstallPwaButton variant="menu" />
           <div className="pt-2 border-t border-border flex items-center justify-between text-xs text-text-secondary px-3">
             <span>Theme Control</span>
             <ThemeToggle />
