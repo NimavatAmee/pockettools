@@ -30,6 +30,9 @@ export const metadata: Metadata = {
     title: "Pocket Tools — All-in-One Utility App",
     description: "Fast, simple, and free online tools for everyday calculations and utilities.",
   },
+  verification: {
+    google: "AnWMgQj_MUO2HEr0wuVYyrhWKaMpAYoG9NkRrjdCAkk",
+  },
 };
 
 export default function RootLayout({
