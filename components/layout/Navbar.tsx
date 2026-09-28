@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
 import { Menu, X, Layers } from "lucide-react";
 import { Button, cn } from "@/components/ui";
+import { InstallPwaButton } from "@/components/shared/InstallPwaButton";
 
 const NAV_LINKS = [
   { name: "Home", href: "/" },
@@ -53,8 +54,9 @@ export function Navbar() {
           })}
         </nav>
 
-        {/* Right Actions: Theme Toggle & Mobile Menu */}
+        {/* Right Actions: Theme Toggle, Install App & Mobile Menu */}
         <div className="flex items-center gap-3">
+          <InstallPwaButton />
           <ThemeToggle />
 
           <Button

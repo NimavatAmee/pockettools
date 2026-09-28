@@ -1,0 +1,41 @@
+{
+  "name": "Pocket Tools — Private All-in-One Calculators",
+  "short_name": "Pocket Tools",
+  "description": "Fast, private, and client-side calculators for Finance, Math, Health, Date & Time, and Developer Tools.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0E1017",
+  "theme_color": "#5B5BF7",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["finance", "utilities", "productivity", "tools"],
+  "shortcuts": [
+    {
+      "name": "GST Calculator",
+      "url": "/calculators/gst",
+      "description": "Instant GST calculation"
+    },
+    {
+      "name": "SIP Calculator",
+      "url": "/calculators/sip",
+      "description": "Calculate SIP returns"
+    },
+    {
+      "name": "EMI Calculator",
+      "url": "/calculators/emi",
+      "description": "Loan EMI & Amortization"
+    },
+    {
+      "name": "EPF Calculator",
+      "url": "/calculators/epf",
+      "description": "EPF retirement corpus"
+    }
+  ]
+}

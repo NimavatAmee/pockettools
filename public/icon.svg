@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0E1017"/>
+      <stop offset="100%" stop-color="#181B26"/>
+    </linearGradient>
+    <linearGradient id="primaryGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#5B5BF7"/>
+      <stop offset="100%" stop-color="#7C7CFF"/>
+    </linearGradient>
+    <linearGradient id="accentGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00C2A8"/>
+      <stop offset="100%" stop-color="#00E5C5"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background with rounded squircle -->
+  <rect width="512" height="512" rx="112" fill="url(#bgGrad)"/>
+  <rect width="510" height="510" x="1" y="1" rx="111" fill="none" stroke="#252A38" stroke-width="2"/>
+
+  <!-- Brand Geometric Stack / Layers -->
+  <g transform="translate(128, 120)">
+    <!-- Bottom Layer -->
+    <path d="M128 20L240 84L128 148L16 84L128 20Z" fill="url(#accentGrad)" opacity="0.85" />
+    <path d="M16 132L128 196L240 132" fill="none" stroke="#5B5BF7" stroke-width="24" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M16 180L128 244L240 180" fill="none" stroke="url(#accentGrad)" stroke-width="24" stroke-linecap="round" stroke-linejoin="round" />
+  </g>
+
+  <!-- Glowing Accent Sparkle -->
+  <circle cx="360" cy="140" r="14" fill="#00C2A8" />
+  <circle cx="360" cy="140" r="28" fill="#00C2A8" opacity="0.25" />
+</svg>

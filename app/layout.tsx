@@ -3,6 +3,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/theme/ThemeProvider";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
+import { PwaRegister } from "@/components/shared/PwaRegister";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://pockettools-seven.vercel.app"),
@@ -30,6 +31,12 @@ export const metadata: Metadata = {
     title: "Pocket Tools — All-in-One Utility App",
     description: "Fast, simple, and free online tools for everyday calculations and utilities.",
   },
+  manifest: "/manifest.json",
+  icons: {
+    icon: "/icon.svg",
+    apple: "/icon.svg",
+  },
+  themeColor: "#5B5BF7",
   verification: {
     google: "AnWMgQj_MUO2HEr0wuVYyrhWKaMpAYoG9NkRrjdCAkk",
   },
@@ -53,6 +60,7 @@ export default function RootLayout({
           <Navbar />
           <main className="flex-1 w-full">{children}</main>
           <Footer />
+          <PwaRegister />
         </ThemeProvider>
       </body>
     </html>
