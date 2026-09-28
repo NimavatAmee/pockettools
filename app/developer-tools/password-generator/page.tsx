@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import type { Metadata } from "next";
 import { getToolBySlug } from "@/lib/constants/tools";
 import { ToolLayout } from "@/components/tools/ToolLayout";
@@ -26,7 +27,9 @@ export default function PasswordGeneratorPage() {
 
   return (
     <ToolLayout tool={tool}>
-      <PasswordGenerator />
+      <Suspense fallback={<div className="p-8 text-center text-sm text-text-secondary">Loading Password Generator...</div>}>
+        <PasswordGenerator />
+      </Suspense>
     </ToolLayout>
   );
 }

@@ -1,16 +1,38 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { calculatePercentage, PercentageMode } from "@/lib/calculations/percentage";
 import { formatNumber, parseSafeNumber } from "@/lib/formatters";
+import { useShareableUrl } from "@/hooks/useShareableUrl";
 import { Button, Card, CardContent, CardHeader, CardTitle, Input } from "@/components/ui";
 import { CopyButton } from "@/components/shared/CommonStates";
+import { ShareButton } from "@/components/shared/ShareModal";
 import { RotateCcw, TrendingUp, TrendingDown } from "lucide-react";
 
 export function PercentageCalculator() {
-  const [mode, setMode] = useState<PercentageMode>("percent_of");
-  const [valueXStr, setValueXStr] = useState<string>("20");
-  const [valueYStr, setValueYStr] = useState<string>("500");
+  const { getInitialParam } = useShareableUrl({});
+
+  const [mode, setMode] = useState<PercentageMode>(() => {
+    const m = getInitialParam("mode", "percent_of");
+    return m === "what_percent" || m === "increase_decrease" ? m : "percent_of";
+  });
+  const [valueXStr, setValueXStr] = useState<string>(() =>
+    getInitialParam("x", "20")
+  );
+  const [valueYStr, setValueYStr] = useState<string>(() =>
+    getInitialParam("y", "500")
+  );
+
+  useShareableUrl(
+    useMemo(
+      () => ({
+        mode,
+        x: valueXStr,
+        y: valueYStr,
+      }),
+      [mode, valueXStr, valueYStr]
+    )
+  );
 
   const x = parseSafeNumber(valueXStr, 0);
   const y = parseSafeNumber(valueYStr, 0);
@@ -26,10 +48,22 @@ export function PercentageCalculator() {
     setValueYStr(mode === "percent_of" ? "500" : "200");
   };
 
-  const copySummaryText = `Percentage Calculation:
-• Mode: ${mode}
-• Result: ${result.result}${mode !== "percent_of" ? "%" : ""}
-• Summary: ${result.explanation}`;
+  const copySummaryText = `Your Percentage Calculation Result
+
+Percentage Math Breakdown
+
+Calculation: ${result.explanation}
+Selected Mode: ${mode === "percent_of" ? "X% of Y" : mode === "what_percent" ? "X is what % of Y" : "Percentage Change"}
+Input Values: X = ${valueXStr}, Y = ${valueYStr}
+
+Calculated Answer: ${formatNumber(result.result, 4)}${mode !== "percent_of" ? "%" : ""}
+
+Want to calculate percentages quickly?
+
+Calculate your Percentage:
+[URL]
+
+Solve percentage of values, find percentage proportions, and calculate percent increase or decrease.`;
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -142,7 +176,10 @@ export function PercentageCalculator() {
               <CardTitle className="text-lg">Calculated Result</CardTitle>
               <p className="text-xs text-text-secondary">Computed output and interpretation</p>
             </div>
-            <CopyButton value={copySummaryText} label="Copy" />
+            <div className="flex items-center gap-2">
+              <ShareButton title="Percentage Calculation" summaryText={copySummaryText} />
+              <CopyButton value={copySummaryText} label="Copy" />
+            </div>
           </CardHeader>
 
           <CardContent className="pt-6 space-y-6">

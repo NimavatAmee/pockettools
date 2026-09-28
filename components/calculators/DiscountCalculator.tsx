@@ -1,17 +1,35 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { calculateDiscount } from "@/lib/calculations/discount";
 import { formatCurrency, parseSafeNumber } from "@/lib/formatters";
+import { useShareableUrl } from "@/hooks/useShareableUrl";
 import { Button, Card, CardContent, CardHeader, CardTitle, Input } from "@/components/ui";
 import { CopyButton } from "@/components/shared/CommonStates";
+import { ShareButton } from "@/components/shared/ShareModal";
 import { RotateCcw, Tag } from "lucide-react";
 
 const DISCOUNT_PRESETS = [5, 10, 15, 20, 25, 30, 40, 50, 70];
 
 export function DiscountCalculator() {
-  const [priceStr, setPriceStr] = useState<string>("1000");
-  const [discountStr, setDiscountStr] = useState<string>("20");
+  const { getInitialParam } = useShareableUrl({});
+
+  const [priceStr, setPriceStr] = useState<string>(() =>
+    getInitialParam("price", "1000")
+  );
+  const [discountStr, setDiscountStr] = useState<string>(() =>
+    getInitialParam("discount", "20")
+  );
+
+  useShareableUrl(
+    useMemo(
+      () => ({
+        price: priceStr,
+        discount: discountStr,
+      }),
+      [priceStr, discountStr]
+    )
+  );
 
   const originalPrice = parseSafeNumber(priceStr, 1000);
   const discountPercentage = parseSafeNumber(discountStr, 20);
@@ -26,11 +44,22 @@ export function DiscountCalculator() {
     setDiscountStr("20");
   };
 
-  const copySummaryText = `Discount Summary:
-• Original Price: ${formatCurrency(result.originalPrice)}
-• Discount: ${result.discountPercentage}%
-• You Save: ${formatCurrency(result.savingsAmount)}
-• Final Checkout Price: ${formatCurrency(result.finalPrice)}`;
+  const copySummaryText = `Your Discount & Sale Price Result
+
+Discount & Savings Breakdown
+
+Original List Price: ${formatCurrency(result.originalPrice)}
+Discount Applied: ${result.discountPercentage}% OFF
+
+Final Checkout Price: ${formatCurrency(result.finalPrice)}
+Total Money Saved: ${formatCurrency(result.savingsAmount)}
+
+Want to check your shopping discounts & savings?
+
+Calculate your Discount:
+[URL]
+
+Instantly find out the final discounted price and see how much money you save on any sale.`;
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -117,7 +146,10 @@ export function DiscountCalculator() {
               <CardTitle className="text-lg">Sale Price Breakdown</CardTitle>
               <p className="text-xs text-text-secondary">Your total savings and net payable</p>
             </div>
-            <CopyButton value={copySummaryText} label="Copy" />
+            <div className="flex items-center gap-2">
+              <ShareButton title="Sale Discount Calculation" summaryText={copySummaryText} />
+              <CopyButton value={copySummaryText} label="Copy" />
+            </div>
           </CardHeader>
 
           <CardContent className="pt-6 space-y-6">

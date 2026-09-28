@@ -1,23 +1,44 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { calculateBmi, BmiUnitSystem } from "@/lib/calculations/bmi";
 import { parseSafeNumber } from "@/lib/formatters";
-import { Button, Card, CardContent, CardHeader, CardTitle, Input, Badge } from "@/components/ui";
+import { useShareableUrl } from "@/hooks/useShareableUrl";
+import { Button, Card, CardContent, CardHeader, CardTitle, Input } from "@/components/ui";
 import { CopyButton } from "@/components/shared/CommonStates";
-import { RotateCcw, AlertTriangle, HeartPulse } from "lucide-react";
+import { ShareButton } from "@/components/shared/ShareModal";
+import { RotateCcw, AlertTriangle } from "lucide-react";
 
 export function BmiCalculator() {
-  const [system, setSystem] = useState<BmiUnitSystem>("metric");
+  const { getInitialParam } = useShareableUrl({});
+
+  const [system, setSystem] = useState<BmiUnitSystem>(() =>
+    getInitialParam("system", "metric") === "imperial" ? "imperial" : "metric"
+  );
   
   // Metric state
-  const [weightKgStr, setWeightKgStr] = useState<string>("70");
-  const [heightCmStr, setHeightCmStr] = useState<string>("175");
+  const [weightKgStr, setWeightKgStr] = useState<string>(() =>
+    getInitialParam("weight", "70")
+  );
+  const [heightCmStr, setHeightCmStr] = useState<string>(() =>
+    getInitialParam("height", "175")
+  );
 
   // Imperial state
   const [weightLbStr, setWeightLbStr] = useState<string>("154");
   const [heightFeetStr, setHeightFeetStr] = useState<string>("5");
   const [heightInchesStr, setHeightInchesStr] = useState<string>("9");
+
+  useShareableUrl(
+    useMemo(
+      () => ({
+        system,
+        weight: system === "metric" ? weightKgStr : weightLbStr,
+        height: system === "metric" ? heightCmStr : `${heightFeetStr}ft_${heightInchesStr}in`,
+      }),
+      [system, weightKgStr, heightCmStr, weightLbStr, heightFeetStr, heightInchesStr]
+    )
+  );
 
   const result = calculateBmi({
     system,
@@ -39,11 +60,26 @@ export function BmiCalculator() {
     }
   };
 
-  const copySummaryText = `BMI Calculation Result:
-• Units: ${system === "metric" ? "Metric (kg/cm)" : "Imperial (lbs/ft-in)"}
-• Calculated BMI Score: ${result ? result.bmi : "N/A"}
-• WHO Category: ${result ? result.category : "N/A"}
-• Healthy Weight Range: ${result ? result.healthyWeightRange : "N/A"}`;
+  const copySummaryText = `Your BMI Result
+
+Body Mass Index (BMI) Assessment
+
+System: ${system === "metric" ? "Metric" : "Imperial"}
+Height: ${system === "metric" ? `${heightCmStr} cm` : `${heightFeetStr} ft ${heightInchesStr} in`}
+Weight: ${system === "metric" ? `${weightKgStr} kg` : `${weightLbStr} lbs`}
+
+Your BMI: ${result ? result.bmi : "N/A"}
+WHO Category: ${result ? result.category : "N/A"}
+Healthy Weight Range: ${result ? result.healthyWeightRange : "N/A"}
+
+Want to check your own BMI?
+
+Calculate your BMI:
+[URL]
+
+Enter your height and weight to instantly calculate your BMI and view your healthy weight range.
+
+Note: BMI is a general screening measure and is not a medical diagnosis.`;
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -187,7 +223,12 @@ export function BmiCalculator() {
               <CardTitle className="text-lg">BMI Assessment</CardTitle>
               <p className="text-xs text-text-secondary">Category and healthy weight range</p>
             </div>
-            {result && <CopyButton value={copySummaryText} label="Copy" />}
+            {result && (
+              <div className="flex items-center gap-2">
+                <ShareButton title="Body Mass Index (BMI) Result" summaryText={copySummaryText} />
+                <CopyButton value={copySummaryText} label="Copy" />
+              </div>
+            )}
           </CardHeader>
 
           <CardContent className="pt-6 space-y-6">

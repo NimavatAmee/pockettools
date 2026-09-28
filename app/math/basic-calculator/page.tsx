@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { getToolBySlug } from "@/lib/constants/tools";
 import { ToolLayout } from "@/components/tools/ToolLayout";
 import { BasicCalculator } from "@/components/calculators/BasicCalculator";
@@ -26,7 +27,9 @@ export default function BasicCalculatorPage() {
 
   return (
     <ToolLayout tool={tool}>
-      <BasicCalculator />
+      <Suspense fallback={<div className="p-8 text-center text-sm text-text-secondary">Loading Calculator...</div>}>
+        <BasicCalculator />
+      </Suspense>
     </ToolLayout>
   );
 }

@@ -1,15 +1,33 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { calculateAge } from "@/lib/calculations/date";
+import { useShareableUrl } from "@/hooks/useShareableUrl";
 import { Button, Card, CardContent, CardHeader, CardTitle, Input } from "@/components/ui";
 import { CopyButton } from "@/components/shared/CommonStates";
+import { ShareButton } from "@/components/shared/ShareModal";
 import { RotateCcw, Calendar, Cake, Clock } from "lucide-react";
 
 export function AgeCalculator() {
   const todayStr = new Date().toISOString().split("T")[0];
-  const [dobStr, setDobStr] = useState<string>("1995-01-15");
-  const [asOfStr, setAsOfStr] = useState<string>(todayStr);
+  const { getInitialParam } = useShareableUrl({});
+
+  const [dobStr, setDobStr] = useState<string>(() =>
+    getInitialParam("dob", "1995-01-15")
+  );
+  const [asOfStr, setAsOfStr] = useState<string>(() =>
+    getInitialParam("asOf", todayStr)
+  );
+
+  useShareableUrl(
+    useMemo(
+      () => ({
+        dob: dobStr,
+        asOf: asOfStr,
+      }),
+      [dobStr, asOfStr]
+    )
+  );
 
   const result = calculateAge(dobStr, asOfStr);
 
@@ -18,11 +36,23 @@ export function AgeCalculator() {
     setAsOfStr(todayStr);
   };
 
-  const copySummaryText = `Age Breakdown:
-• Date of Birth: ${dobStr}
-• Age as of ${asOfStr}: ${result.years} Years, ${result.months} Months, ${result.days} Days
-• Total Days Lived: ${result.totalDays.toLocaleString()} days
-• Days until Next Birthday: ${result.nextBirthdayDays} days`;
+  const copySummaryText = `Your Age Breakdown Result
+
+Exact Age & Birthday Milestone
+
+Date of Birth: ${dobStr}
+Age Evaluation Date: ${asOfStr}
+
+Your Exact Age: ${result.years} Years, ${result.months} Months, ${result.days} Days
+Total Days Lived: ${result.totalDays.toLocaleString()} days
+Next Birthday In: ${result.nextBirthdayDays} days
+
+Want to calculate your exact age or next birthday countdown?
+
+Calculate your Age:
+[URL]
+
+Find out your exact age breakdown in years, months, days, hours, and count down to your next birthday.`;
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -97,7 +127,10 @@ export function AgeCalculator() {
               <CardTitle className="text-lg">Calculated Age</CardTitle>
               <p className="text-xs text-text-secondary">Full calendar breakdown and milestones</p>
             </div>
-            {result.isValid && <CopyButton value={copySummaryText} label="Copy" />}
+            <div className="flex items-center gap-2">
+              <ShareButton title="Age Calculation Result" summaryText={copySummaryText} />
+              {result.isValid && <CopyButton value={copySummaryText} label="Copy" />}
+            </div>
           </CardHeader>
 
           <CardContent className="pt-6 space-y-6">

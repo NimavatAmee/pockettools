@@ -2,7 +2,7 @@ import { MetadataRoute } from "next";
 import { TOOLS } from "@/lib/constants/tools";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = "https://pockettools.app";
+  const baseUrl = "https://pockettools-seven.vercel.app";
 
   const staticRoutes: MetadataRoute.Sitemap = [
     {

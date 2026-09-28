@@ -4,6 +4,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { evaluateExpression } from "@/lib/calculations/calculator";
 import { Card, CardContent, CardHeader, CardTitle, Button } from "@/components/ui";
 import { CopyButton } from "@/components/shared/CommonStates";
+import { ShareButton } from "@/components/shared/ShareModal";
 import { Delete, History } from "lucide-react";
 
 interface KeypadButton {
@@ -125,13 +126,30 @@ export function BasicCalculator() {
     ],
   ];
 
+  const copySummaryText = `Your Arithmetic Calculation Result
+
+Pocket Tools Standard Calculator
+
+Expression: ${expression || "0"}
+Calculated Answer: ${result}
+
+Want to do fast everyday math calculations?
+
+Open Calculator:
+[URL]
+
+Fast, keyboard-friendly online arithmetic calculator with instant results and memory history.`;
+
   return (
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 max-w-4xl mx-auto">
       {/* Calculator Body */}
       <Card className="lg:col-span-7 border-border shadow-md">
         <CardHeader className="border-b border-border pb-3 flex flex-row items-center justify-between">
           <CardTitle className="text-base font-semibold">Standard Calculator</CardTitle>
-          <CopyButton value={result} label="Copy Result" />
+          <div className="flex items-center gap-2">
+            <ShareButton title="Math Calculator Result" summaryText={copySummaryText} />
+            <CopyButton value={result} label="Copy Result" />
+          </div>
         </CardHeader>
 
         <CardContent className="pt-4 space-y-4">

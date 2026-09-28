@@ -1,18 +1,39 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { calculateTip } from "@/lib/calculations/tip";
 import { formatCurrency, parseSafeNumber } from "@/lib/formatters";
+import { useShareableUrl } from "@/hooks/useShareableUrl";
 import { Button, Card, CardContent, CardHeader, CardTitle, Input } from "@/components/ui";
 import { CopyButton } from "@/components/shared/CommonStates";
+import { ShareButton } from "@/components/shared/ShareModal";
 import { RotateCcw, Users, Utensils } from "lucide-react";
 
 const TIP_PRESETS = [5, 10, 15, 20, 25];
 
 export function TipCalculator() {
-  const [billStr, setBillStr] = useState<string>("1000");
-  const [tipPctStr, setTipPctStr] = useState<string>("10");
-  const [peopleStr, setPeopleStr] = useState<string>("2");
+  const { getInitialParam } = useShareableUrl({});
+
+  const [billStr, setBillStr] = useState<string>(() =>
+    getInitialParam("bill", "1000")
+  );
+  const [tipPctStr, setTipPctStr] = useState<string>(() =>
+    getInitialParam("tip", "10")
+  );
+  const [peopleStr, setPeopleStr] = useState<string>(() =>
+    getInitialParam("people", "2")
+  );
+
+  useShareableUrl(
+    useMemo(
+      () => ({
+        bill: billStr,
+        tip: tipPctStr,
+        people: peopleStr,
+      }),
+      [billStr, tipPctStr, peopleStr]
+    )
+  );
 
   const billAmount = parseSafeNumber(billStr, 1000);
   const tipPercentage = parseSafeNumber(tipPctStr, 10);
@@ -30,12 +51,24 @@ export function TipCalculator() {
     setPeopleStr("2");
   };
 
-  const copySummaryText = `Bill & Tip Split Summary:
-• Subtotal: ${formatCurrency(result.billAmount)}
-• Tip (${result.tipPercentage}%): ${formatCurrency(result.tipAmount)}
-• Grand Total: ${formatCurrency(result.totalAmount)}
-• Split Among: ${result.numberOfPeople} person(s)
-• Total Per Person: ${formatCurrency(result.totalPerPerson)} (Tip: ${formatCurrency(result.tipPerPerson)})`;
+  const copySummaryText = `Your Tip & Bill Split Result
+
+Restaurant Tip & Split Bill Breakdown
+
+Bill Subtotal: ${formatCurrency(result.billAmount)}
+Tip Percentage: ${result.tipPercentage}%
+Party Size: ${result.numberOfPeople} person(s)
+
+Tip Amount: ${formatCurrency(result.tipAmount)}
+Total Bill with Tip: ${formatCurrency(result.totalAmount)}
+Total Per Person: ${formatCurrency(result.totalPerPerson)} (Includes ${formatCurrency(result.tipPerPerson)} tip share)
+
+Want to calculate tips and split bills with friends?
+
+Calculate your Tip:
+[URL]
+
+Easily split dining checks, calculate tips per person, and avoid math at the table.`;
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -147,7 +180,10 @@ export function TipCalculator() {
               <CardTitle className="text-lg">Split Breakdown</CardTitle>
               <p className="text-xs text-text-secondary">Per-person share & total billing</p>
             </div>
-            <CopyButton value={copySummaryText} label="Copy" />
+            <div className="flex items-center gap-2">
+              <ShareButton title="Tip & Bill Split Calculation" summaryText={copySummaryText} />
+              <CopyButton value={copySummaryText} label="Copy" />
+            </div>
           </CardHeader>
 
           <CardContent className="pt-6 space-y-6">

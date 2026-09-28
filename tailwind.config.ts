@@ -18,10 +18,14 @@ const config: Config = {
     extend: {
       colors: {
         primary: {
-          DEFAULT: "#5B5BF0",
-          hover: "#4949D6",
-          light: "#EDEDFD",
-          dark: "#2A2A70",
+          DEFAULT: "var(--primary)",
+          hover: "var(--primary-hover)",
+          light: "var(--primary-light)",
+        },
+        accent: {
+          DEFAULT: "var(--accent)",
+          hover: "var(--accent-hover)",
+          light: "var(--accent-light)",
         },
         background: "var(--background)",
         surface: "var(--surface)",
@@ -34,7 +38,7 @@ const config: Config = {
         border: "var(--border)",
       },
       borderRadius: {
-        card: "14px",
+        card: "16px",
         btn: "11px",
       },
       maxWidth: {

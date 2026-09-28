@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { getToolBySlug } from "@/lib/constants/tools";
 import { ToolLayout } from "@/components/tools/ToolLayout";
 import { PercentageCalculator } from "@/components/calculators/PercentageCalculator";
@@ -26,7 +27,9 @@ export default function PercentageCalculatorPage() {
 
   return (
     <ToolLayout tool={tool}>
-      <PercentageCalculator />
+      <Suspense fallback={<div className="p-8 text-center text-sm text-text-secondary">Loading Percentage Calculator...</div>}>
+        <PercentageCalculator />
+      </Suspense>
     </ToolLayout>
   );
 }

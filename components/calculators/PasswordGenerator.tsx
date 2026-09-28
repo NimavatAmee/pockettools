@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { generateSecurePassword, PasswordOptions } from "@/lib/calculations/password-generator";
 import { Button, Card, CardContent, CardHeader, CardTitle, Badge } from "@/components/ui";
 import { CopyButton } from "@/components/shared/CommonStates";
+import { ShareButton } from "@/components/shared/ShareModal";
 import { RefreshCw, Shield, ShieldCheck, Key, Check } from "lucide-react";
 
 export function PasswordGenerator() {
@@ -55,6 +56,22 @@ export function PasswordGenerator() {
               {password || "Select at least 1 character set"}
             </div>
             <div className="flex items-center gap-2 shrink-0">
+              <ShareButton
+                title="Secure Password Generator"
+                summaryText={`Your Secure Password Generator
+
+Cryptographically Secure Random Password Creator
+
+Security Rating: ${strength} (~${entropy} bits entropy)
+Password Length: ${length} characters
+
+Want to generate strong, unique passwords for your accounts?
+
+Generate Secure Password:
+[URL]
+
+Generate ultra-secure, cryptographically random passwords locally in your browser using Web Crypto API. 100% private, zero server storage.`}
+              />
               <Button
                 variant="outline"
                 size="sm"

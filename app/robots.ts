@@ -6,6 +6,6 @@ export default function robots(): MetadataRoute.Robots {
       userAgent: "*",
       allow: "/",
     },
-    sitemap: "https://pockettools.app/sitemap.xml",
+    sitemap: "https://pockettools-seven.vercel.app/sitemap.xml",
   };
 }

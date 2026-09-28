@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { getToolBySlug } from "@/lib/constants/tools";
 import { ToolLayout } from "@/components/tools/ToolLayout";
 import { TipCalculator } from "@/components/calculators/TipCalculator";
@@ -26,7 +27,9 @@ export default function TipCalculatorPage() {
 
   return (
     <ToolLayout tool={tool}>
-      <TipCalculator />
+      <Suspense fallback={<div className="p-8 text-center text-sm text-text-secondary">Loading Tip Calculator...</div>}>
+        <TipCalculator />
+      </Suspense>
     </ToolLayout>
   );
 }

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { getToolBySlug } from "@/lib/constants/tools";
 import { ToolLayout } from "@/components/tools/ToolLayout";
 import { GstCalculator } from "@/components/calculators/GstCalculator";
@@ -7,7 +8,7 @@ import { notFound } from "next/navigation";
 export const metadata: Metadata = {
   title: "GST Calculator — Calculate GST Exclusive & Inclusive Online",
   description:
-    "Free online GST Calculator for India. Calculate GST exclusive and inclusive prices, CGST, SGST, IGST with 0%, 5%, 12%, 18%, 28% slabs and custom tax rates.",
+    "Free online GST Calculator for India. Calculate GST exclusive and inclusive prices, CGST, SGST, IGST with 0%, 5%, 12%, 18%, 28% slabs and custom tax rates. Download PDF & CSV.",
   alternates: {
     canonical: "https://pockettools.app/calculators/gst",
   },
@@ -26,7 +27,9 @@ export default function GstCalculatorPage() {
 
   return (
     <ToolLayout tool={tool}>
-      <GstCalculator />
+      <Suspense fallback={<div className="p-8 text-center text-sm text-text-secondary">Loading GST Calculator...</div>}>
+        <GstCalculator />
+      </Suspense>
     </ToolLayout>
   );
 }

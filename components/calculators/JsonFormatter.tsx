@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { formatJson } from "@/lib/calculations/json-formatter";
 import { Button, Card, CardContent, CardHeader, CardTitle, Badge } from "@/components/ui";
 import { CopyButton } from "@/components/shared/CommonStates";
+import { ShareButton } from "@/components/shared/ShareModal";
 import { Trash2, Sparkles, Minimize2, CheckCircle2, AlertCircle } from "lucide-react";
 
 const SAMPLE_JSON = `{
@@ -78,6 +79,24 @@ export function JsonFormatter() {
         </div>
 
         <div className="flex items-center gap-2">
+          <ShareButton
+            title="JSON Formatter & Validator"
+            summaryText={`Your JSON Document Status
+
+JSON Formatter & Validator
+
+Document Status: ${result.success ? "Valid JSON (RFC 8259)" : "Syntax Error Detected"}
+Document Size: ${result.stats?.sizeBytes ?? 0} bytes
+Total Lines: ${result.stats?.linesCount ?? 0}
+Total Keys: ${result.stats?.keysCount ?? 0}
+
+Want to format, beautify, or validate your JSON documents?
+
+Format your JSON:
+[URL]
+
+100% private, browser-based JSON formatter, validator, and minifier with instant error detection.`}
+          />
           <Button variant="ghost" size="sm" onClick={handleLoadSample} className="text-xs">
             Load Sample
           </Button>

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { getToolBySlug } from "@/lib/constants/tools";
 import { ToolLayout } from "@/components/tools/ToolLayout";
 import { DiscountCalculator } from "@/components/calculators/DiscountCalculator";
@@ -26,7 +27,9 @@ export default function DiscountCalculatorPage() {
 
   return (
     <ToolLayout tool={tool}>
-      <DiscountCalculator />
+      <Suspense fallback={<div className="p-8 text-center text-sm text-text-secondary">Loading Discount Calculator...</div>}>
+        <DiscountCalculator />
+      </Suspense>
     </ToolLayout>
   );
 }

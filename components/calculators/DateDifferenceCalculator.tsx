@@ -1,15 +1,36 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { calculateDateDifference } from "@/lib/calculations/date";
+import { useShareableUrl } from "@/hooks/useShareableUrl";
 import { Button, Card, CardContent, CardHeader, CardTitle, Input } from "@/components/ui";
 import { CopyButton } from "@/components/shared/CommonStates";
+import { ShareButton } from "@/components/shared/ShareModal";
 import { RotateCcw, Calendar, Briefcase, SunMedium } from "lucide-react";
 
 export function DateDifferenceCalculator() {
-  const [startDateStr, setStartDateStr] = useState<string>("2026-01-01");
-  const [endDateStr, setEndDateStr] = useState<string>("2026-01-31");
-  const [inclusive, setInclusive] = useState<boolean>(false);
+  const { getInitialParam } = useShareableUrl({});
+
+  const [startDateStr, setStartDateStr] = useState<string>(() =>
+    getInitialParam("start", "2026-01-01")
+  );
+  const [endDateStr, setEndDateStr] = useState<string>(() =>
+    getInitialParam("end", "2026-01-31")
+  );
+  const [inclusive, setInclusive] = useState<boolean>(() =>
+    getInitialParam("inc", "0") === "1"
+  );
+
+  useShareableUrl(
+    useMemo(
+      () => ({
+        start: startDateStr,
+        end: endDateStr,
+        inc: inclusive ? "1" : "0",
+      }),
+      [startDateStr, endDateStr, inclusive]
+    )
+  );
 
   const result = calculateDateDifference(startDateStr, endDateStr, inclusive);
 
@@ -19,12 +40,25 @@ export function DateDifferenceCalculator() {
     setInclusive(false);
   };
 
-  const copySummaryText = `Date Difference:
-• From: ${startDateStr} to ${endDateStr}
-• Total Elapsed Days: ${inclusive ? result.inclusiveDays : result.totalDays} days
-• Duration: ${result.years} years, ${result.months} months, ${result.days} days (${result.weeks} weeks and ${result.remainingDays} days)
-• Working Days (Mon-Fri): ${result.workingDays} days
-• Weekend Days: ${result.weekendDays} days`;
+  const copySummaryText = `Your Date Difference Result
+
+Calendar & Business Days Duration
+
+Start Date: ${startDateStr}
+End Date: ${endDateStr}
+Include End Date: ${inclusive ? "Yes (+1 day)" : "No"}
+
+Total Elapsed Days: ${inclusive ? result.inclusiveDays : result.totalDays} Days
+Calendar Duration: ${result.years > 0 ? `${result.years} Years, ` : ""}${result.months > 0 ? `${result.months} Months, ` : ""}${result.days} Days (${result.weeks} weeks and ${result.remainingDays} days)
+Working Days (Mon - Fri): ${result.workingDays} days
+Weekend Days: ${result.weekendDays} days
+
+Want to calculate days between two dates?
+
+Calculate your Date Difference:
+[URL]
+
+Calculate total elapsed days, calendar duration, and business working days between any two dates.`;
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -121,7 +155,10 @@ export function DateDifferenceCalculator() {
               <CardTitle className="text-lg">Duration Summary</CardTitle>
               <p className="text-xs text-text-secondary">Elapsed days, calendar duration & business days</p>
             </div>
-            {result.isValid && <CopyButton value={copySummaryText} label="Copy" />}
+            <div className="flex items-center gap-2">
+              <ShareButton title="Date Difference Calculation" summaryText={copySummaryText} />
+              {result.isValid && <CopyButton value={copySummaryText} label="Copy" />}
+            </div>
           </CardHeader>
 
           <CardContent className="pt-6 space-y-6">

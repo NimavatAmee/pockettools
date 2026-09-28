@@ -6,7 +6,7 @@ import { Moon, Sun, Monitor } from "lucide-react";
 import { Button } from "@/components/ui";
 
 export function ThemeToggle() {
-  const { theme, setTheme } = useTheme();
+  const { resolvedTheme, setTheme } = useTheme();
   const [mounted, setMounted] = React.useState(false);
 
   React.useEffect(() => {
@@ -21,24 +21,26 @@ export function ThemeToggle() {
     );
   }
 
-  const cycleTheme = () => {
-    if (theme === "light") setTheme("dark");
-    else if (theme === "dark") setTheme("system");
-    else setTheme("light");
+  const isDark = resolvedTheme === "dark";
+
+  const toggleTheme = () => {
+    setTheme(isDark ? "light" : "dark");
   };
 
   return (
     <Button
       variant="outline"
       size="sm"
-      onClick={cycleTheme}
+      onClick={toggleTheme}
       className="w-10 h-10 p-0 rounded-btn"
-      aria-label={`Current theme: ${theme}. Click to switch theme.`}
-      title={`Theme: ${theme}`}
+      aria-label={`Switch to ${isDark ? "Light" : "Dark"} mode`}
+      title={`Current: ${isDark ? "Dark" : "Light"} mode. Click to switch.`}
     >
-      {theme === "light" && <Sun className="w-4 h-4 text-amber-500 transition-transform" />}
-      {theme === "dark" && <Moon className="w-4 h-4 text-primary transition-transform" />}
-      {theme === "system" && <Monitor className="w-4 h-4 text-text-secondary transition-transform" />}
+      {isDark ? (
+        <Moon className="w-4 h-4 text-primary transition-transform hover:scale-110" />
+      ) : (
+        <Sun className="w-4 h-4 text-amber-500 transition-transform hover:scale-110" />
+      )}
     </Button>
   );
 }

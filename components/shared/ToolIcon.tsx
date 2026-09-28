@@ -18,6 +18,11 @@ import {
   RefreshCw,
   Code,
   Sparkles,
+  QrCode,
+  TrendingUp,
+  PiggyBank,
+  DollarSign,
+  Timer,
   LucideProps,
 } from "lucide-react";
 
@@ -44,6 +49,11 @@ const ICON_MAP: Record<string, React.FC<LucideProps>> = {
   RefreshCw,
   Code,
   Sparkles,
+  QrCode,
+  TrendingUp,
+  PiggyBank,
+  DollarSign,
+  Timer,
 };
 
 export function ToolIcon({ name, className, ...props }: ToolIconProps) {

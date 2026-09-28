@@ -43,14 +43,14 @@ export function HomeClient() {
     <div className="space-y-16 pb-16">
       {/* 1. Hero Section */}
       <section className="relative pt-12 md:pt-20 pb-12 px-4 sm:px-6 lg:px-8 max-w-content mx-auto text-center">
-        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-primary-light border border-primary/20 text-xs font-semibold text-primary mb-6 animate-in fade-in slide-in-from-bottom-2">
+        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-accent/10 border border-accent/30 text-xs font-semibold text-accent mb-6 animate-in fade-in slide-in-from-bottom-2">
           <Sparkles className="w-3.5 h-3.5" />
           <span>100% Free • Client-Side • Privacy-First</span>
         </div>
 
         <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-text max-w-4xl mx-auto leading-[1.15]">
           Everything You Need, <br className="hidden sm:inline" />
-          <span className="bg-gradient-to-r from-primary to-[#7B7BFF] bg-clip-text text-transparent">
+          <span className="bg-gradient-to-r from-primary via-[#00C2A8] to-primary bg-clip-text text-transparent">
             All in One Place.
           </span>
         </h1>
@@ -312,6 +312,46 @@ export function HomeClient() {
   );
 }
 
+function getCategoryTheme(categorySlug: string) {
+  switch (categorySlug) {
+    case "finance":
+      return {
+        iconBg: "bg-emerald-500/10 text-emerald-500 group-hover:bg-emerald-500 group-hover:text-white",
+        badge: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20",
+      };
+    case "math":
+      return {
+        iconBg: "bg-primary/10 text-primary group-hover:bg-primary group-hover:text-white",
+        badge: "bg-primary/10 text-primary border-primary/20",
+      };
+    case "health":
+      return {
+        iconBg: "bg-rose-500/10 text-rose-500 group-hover:bg-rose-500 group-hover:text-white",
+        badge: "bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/20",
+      };
+    case "date-time":
+      return {
+        iconBg: "bg-amber-500/10 text-amber-500 group-hover:bg-amber-500 group-hover:text-white",
+        badge: "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20",
+      };
+    case "converters":
+      return {
+        iconBg: "bg-cyan-500/10 text-cyan-500 group-hover:bg-cyan-500 group-hover:text-white",
+        badge: "bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border-cyan-500/20",
+      };
+    case "developer-tools":
+      return {
+        iconBg: "bg-purple-500/10 text-purple-500 group-hover:bg-purple-500 group-hover:text-white",
+        badge: "bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-500/20",
+      };
+    default:
+      return {
+        iconBg: "bg-primary/10 text-primary group-hover:bg-primary group-hover:text-white",
+        badge: "bg-surface-secondary text-text-secondary border-border",
+      };
+  }
+}
+
 function ToolCard({
   tool,
   isFav,
@@ -321,15 +361,19 @@ function ToolCard({
   isFav: boolean;
   onToggleFav: () => void;
 }) {
+  const catTheme = getCategoryTheme(tool.categorySlug);
+
   return (
     <Card className="border-border hover:border-primary/50 transition-all hover:shadow-md flex flex-col justify-between group">
       <div>
         <div className="flex items-center justify-between pb-3">
-          <div className="w-10 h-10 rounded-btn bg-primary-light text-primary flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-colors">
+          <div className={`w-10 h-10 rounded-btn flex items-center justify-center transition-all duration-200 ${catTheme.iconBg}`}>
             <ToolIcon name={tool.icon} className="w-5 h-5" />
           </div>
           <div className="flex items-center gap-1.5">
-            <Badge variant="secondary">{tool.category}</Badge>
+            <span className={`text-[11px] font-semibold px-2.5 py-0.5 rounded-full border ${catTheme.badge}`}>
+              {tool.category}
+            </span>
             <button
               type="button"
               onClick={(e) => {

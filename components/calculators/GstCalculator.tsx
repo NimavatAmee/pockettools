@@ -1,23 +1,47 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { calculateGst } from "@/lib/calculations/gst";
+import { exportGstReceiptToPdf } from "@/lib/export/pdfExporter";
+import { exportGstSummaryToCsv } from "@/lib/export/csvExporter";
+import { useShareableUrl } from "@/hooks/useShareableUrl";
 import { formatCurrency, parseSafeNumber } from "@/lib/formatters";
 import { Button, Card, CardContent, CardHeader, CardTitle, Input } from "@/components/ui";
 import { CopyButton } from "@/components/shared/CommonStates";
-import { RotateCcw, ArrowRight } from "lucide-react";
+import { ShareButton } from "@/components/shared/ShareModal";
+import { RotateCcw, ArrowRight, FileText, Download } from "lucide-react";
 
 const GST_RATES = [0, 5, 12, 18, 28];
 
 export function GstCalculator() {
-  const [amountStr, setAmountStr] = useState<string>("10000");
-  const [selectedRate, setSelectedRate] = useState<number>(18);
+  const { getInitialParam } = useShareableUrl({});
+
+  const [amountStr, setAmountStr] = useState<string>(() =>
+    getInitialParam("amount", "10000")
+  );
+  const [selectedRate, setSelectedRate] = useState<number>(() =>
+    parseSafeNumber(getInitialParam("rate", "18"), 18)
+  );
   const [customRate, setCustomRate] = useState<string>("");
   const [isCustomRate, setIsCustomRate] = useState<boolean>(false);
-  const [isInclusive, setIsInclusive] = useState<boolean>(false);
+  const [isInclusive, setIsInclusive] = useState<boolean>(() =>
+    getInitialParam("mode", "exclusive") === "inclusive"
+  );
 
   const amount = parseSafeNumber(amountStr, 0);
   const activeRate = isCustomRate ? parseSafeNumber(customRate, 0) : selectedRate;
+
+  // Sync state to URL params live
+  useShareableUrl(
+    useMemo(
+      () => ({
+        amount: amountStr,
+        rate: activeRate,
+        mode: isInclusive ? "inclusive" : "exclusive",
+      }),
+      [amountStr, activeRate, isInclusive]
+    )
+  );
 
   const result = calculateGst({
     amount,
@@ -33,15 +57,25 @@ export function GstCalculator() {
     setIsInclusive(false);
   };
 
-  const copySummaryText = `GST Calculation Summary:
-• Mode: ${isInclusive ? "GST Inclusive" : "GST Exclusive"}
-• Initial Amount: ₹${amountStr}
-• GST Rate: ${activeRate}%
-• Base Amount: ${formatCurrency(result.baseAmount)}
-• CGST (50%): ${formatCurrency(result.cgst)}
-• SGST (50%): ${formatCurrency(result.sgst)}
-• Total GST Tax: ${formatCurrency(result.gstAmount)}
-• Total Payable: ${formatCurrency(result.totalAmount)}`;
+  const copySummaryText = `Your GST Calculation Result
+
+Goods and Services Tax (GST) Breakdown
+
+Calculation Type: ${isInclusive ? "GST Inclusive (Extract Tax)" : "GST Exclusive (Add Tax)"}
+Initial Amount: ₹${amountStr}
+GST Rate: ${activeRate}%
+
+Net Base Price: ${formatCurrency(result.baseAmount)}
+GST Tax Amount: ${formatCurrency(result.gstAmount)}
+Total Payable Amount: ${formatCurrency(result.totalAmount)}
+(CGST: ${formatCurrency(result.cgst)} | SGST: ${formatCurrency(result.sgst)})
+
+Want to calculate GST for your products or invoices?
+
+Calculate your GST:
+[URL]
+
+Quickly calculate inclusive and exclusive GST rates with CGST, SGST & IGST tax breakdowns.`;
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -173,7 +207,10 @@ export function GstCalculator() {
               <CardTitle className="text-lg">Calculation Breakdown</CardTitle>
               <p className="text-xs text-text-secondary">Summary of tax and totals</p>
             </div>
-            <CopyButton value={copySummaryText} label="Copy" />
+            <div className="flex items-center gap-2">
+              <ShareButton title="GST Tax Calculation" summaryText={copySummaryText} />
+              <CopyButton value={copySummaryText} label="Copy" />
+            </div>
           </CardHeader>
 
           <CardContent className="pt-6 space-y-4">
@@ -217,6 +254,31 @@ export function GstCalculator() {
                 <span className="font-medium text-text">Total GST Tax Amount</span>
                 <span className="font-bold text-primary">{formatCurrency(result.gstAmount)}</span>
               </div>
+            </div>
+
+            {/* PDF & CSV Download Buttons */}
+            <div className="pt-2 flex flex-wrap gap-2.5">
+              <Button
+                type="button"
+                variant="primary"
+                size="sm"
+                onClick={() => exportGstReceiptToPdf(amount, activeRate, isInclusive, result)}
+                className="gap-2 text-xs flex-1"
+              >
+                <FileText className="w-4 h-4" />
+                <span>Download PDF Receipt</span>
+              </Button>
+
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => exportGstSummaryToCsv(amount, activeRate, isInclusive, result)}
+                className="gap-2 text-xs flex-1"
+              >
+                <Download className="w-4 h-4 text-primary" />
+                <span>Export CSV</span>
+              </Button>
             </div>
           </CardContent>
         </div>

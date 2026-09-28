@@ -5,7 +5,7 @@ import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://pockettools.app"),
+  metadataBase: new URL("https://pockettools-seven.vercel.app"),
   title: {
     template: "%s | Pocket Tools",
     default: "Pocket Tools — Fast, Free & Private Online Calculators",
@@ -42,8 +42,9 @@ export default function RootLayout({
       <body className="min-h-screen bg-background text-text antialiased flex flex-col selection:bg-primary/20 selection:text-primary">
         <ThemeProvider
           attribute="class"
-          defaultTheme="system"
-          enableSystem
+          defaultTheme="dark"
+          themes={["light", "dark"]}
+          enableSystem={false}
           disableTransitionOnChange
         >
           <Navbar />

@@ -1,21 +1,47 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import {
   UnitCategory,
   UNIT_CATEGORIES,
   convertUnit,
 } from "@/lib/calculations/unit-converter";
 import { parseSafeNumber } from "@/lib/formatters";
+import { useShareableUrl } from "@/hooks/useShareableUrl";
 import { Button, Card, CardContent, CardHeader, CardTitle, Input } from "@/components/ui";
 import { CopyButton } from "@/components/shared/CommonStates";
+import { ShareButton } from "@/components/shared/ShareModal";
 import { ArrowLeftRight, RotateCcw } from "lucide-react";
 
 export function UnitConverter() {
-  const [category, setCategory] = useState<UnitCategory>("length");
-  const [fromUnit, setFromUnit] = useState<string>("m");
-  const [toUnit, setToUnit] = useState<string>("km");
-  const [valueStr, setValueStr] = useState<string>("1000");
+  const { getInitialParam } = useShareableUrl({});
+
+  const initialCat = (getInitialParam("cat", "length") as UnitCategory) in UNIT_CATEGORIES
+    ? (getInitialParam("cat", "length") as UnitCategory)
+    : "length";
+
+  const [category, setCategory] = useState<UnitCategory>(initialCat);
+  const [fromUnit, setFromUnit] = useState<string>(() =>
+    getInitialParam("from", "m")
+  );
+  const [toUnit, setToUnit] = useState<string>(() =>
+    getInitialParam("to", "km")
+  );
+  const [valueStr, setValueStr] = useState<string>(() =>
+    getInitialParam("val", "1000")
+  );
+
+  useShareableUrl(
+    useMemo(
+      () => ({
+        cat: category,
+        from: fromUnit,
+        to: toUnit,
+        val: valueStr,
+      }),
+      [category, fromUnit, toUnit, valueStr]
+    )
+  );
 
   const currentCategory = UNIT_CATEGORIES[category];
   const value = parseSafeNumber(valueStr, 0);
@@ -46,10 +72,20 @@ export function UnitConverter() {
     handleCategoryChange(category);
   };
 
-  const copySummaryText = `Unit Conversion:
-• Category: ${currentCategory.name}
-• ${result.fromValue} ${result.fromUnit} = ${result.toValue} ${result.toUnit}
-• Formula: ${result.formula}`;
+  const copySummaryText = `Your Unit Conversion Result
+
+${currentCategory.name} Measurement Conversion
+
+From: ${result.fromValue} ${result.fromUnit}
+To: ${result.toValue} ${result.toUnit}
+Formula: ${result.formula}
+
+Want to convert units across length, weight, temperature, and more?
+
+Convert your Units:
+[URL]
+
+Fast, high-precision unit conversion across length, weight, area, volume, temperature, and digital data storage.`;
 
   return (
     <div className="space-y-6">
@@ -165,7 +201,10 @@ export function UnitConverter() {
                 <CardTitle className="text-lg">Converted Result</CardTitle>
                 <p className="text-xs text-text-secondary">Instant conversion output & unit details</p>
               </div>
+              <div className="flex items-center gap-2">
+              <ShareButton title="Unit Conversion Result" summaryText={copySummaryText} />
               <CopyButton value={copySummaryText} label="Copy" />
+            </div>
             </CardHeader>
 
             <CardContent className="pt-6 space-y-6">
