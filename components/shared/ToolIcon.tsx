@@ -23,6 +23,7 @@ import {
   PiggyBank,
   DollarSign,
   Timer,
+  Landmark,
   LucideProps,
 } from "lucide-react";
 
@@ -54,6 +55,7 @@ const ICON_MAP: Record<string, React.FC<LucideProps>> = {
   PiggyBank,
   DollarSign,
   Timer,
+  Landmark,
 };
 
 export function ToolIcon({ name, className, ...props }: ToolIconProps) {

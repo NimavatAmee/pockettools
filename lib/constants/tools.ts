@@ -876,6 +876,59 @@ export const TOOLS: Tool[] = [
       },
     ],
   },
+  // 20. EPF Calculator
+  {
+    id: "epf-calculator",
+    name: "EPF Calculator",
+    slug: "calculators/epf",
+    category: "Finance",
+    categorySlug: "finance",
+    description: "Calculate your Employees' Provident Fund (EPF) retirement corpus with compounding monthly interest and annual salary increments.",
+    icon: "Landmark",
+    keywords: [
+      "epf calculator",
+      "pf calculator",
+      "provident fund",
+      "epfo interest",
+      "retirement corpus",
+      "pension",
+      "salary deduction",
+      "8.25 epf interest",
+    ],
+    featured: true,
+    formula: {
+      title: "EPF Corpus & Compounding Formula",
+      expression: "Total Corpus = Initial Balance + Total (Employee 12% + Employer 3.67%) + Compounded Interest at 8.25% p.a.",
+      explanation: "Employee contributes 12% of Basic Salary + DA. The employer contributes 12%, where 3.67% goes to EPF and 8.33% goes to EPS. Interest is compounded monthly on the running balance and credited annually.",
+      steps: [
+        "Enter your current age, target retirement age (default 58), and monthly Basic Salary + DA.",
+        "Set your expected annual salary increment percentage (e.g. 5% to 10%).",
+        "The calculator automatically tracks your monthly contributions, applies annual salary raises, and projects your total retirement fund.",
+      ],
+    },
+    examples: [
+      {
+        title: "Starting at Age 25 with ₹40,000 Basic",
+        description: "Employee contributing 12% for 33 years with 5% annual increment and 8.25% interest rate.",
+        inputs: { "Current Age": "25 yrs", "Monthly Basic": "₹40,000", "Annual Increment": "5%", "Interest Rate": "8.25%" },
+        result: { "Total Contributed": "₹65.17 Lakh", "Interest Earned": "₹1.48 Crore", "Retirement Corpus": "₹2.13 Crore" },
+      },
+    ],
+    faqs: [
+      {
+        question: "What is the current EPF interest rate in India?",
+        answer: "The current EPF interest rate set by the EPFO for FY 2023-24 and FY 2024-25 is 8.25% per annum.",
+      },
+      {
+        question: "How is the employer's 12% share distributed?",
+        answer: "From the employer's 12% statutory contribution, 3.67% goes directly into your EPF account and 8.33% goes to the Employees' Pension Scheme (EPS).",
+      },
+      {
+        question: "Is EPF maturity tax-free?",
+        answer: "Yes, withdrawals from EPF after completing 5 continuous years of service are completely exempt from Income Tax under Section 10(11)/(12) of the Income Tax Act.",
+      },
+    ],
+  },
 ];
 
 export function getToolBySlug(slug: string): Tool | undefined {
