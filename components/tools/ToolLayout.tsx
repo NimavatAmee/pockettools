@@ -8,6 +8,8 @@ import { ToolIcon } from "@/components/shared/ToolIcon";
 import { useToolPreferences } from "@/hooks/useToolPreferences";
 import { ChevronRight, Star, HelpCircle, BookOpen, Layers } from "lucide-react";
 import { Button, Card, CardContent, CardHeader, CardTitle, Badge } from "@/components/ui";
+import { getAffiliateOfferForTool } from "@/lib/constants/affiliates";
+import { AffiliateRecommendationCard } from "@/components/shared/AffiliateRecommendationCard";
 
 interface ToolLayoutProps {
   tool: Tool;
@@ -17,6 +19,7 @@ interface ToolLayoutProps {
 export function ToolLayout({ tool, children }: ToolLayoutProps) {
   const { isFavorite, toggleFavorite, addRecent } = useToolPreferences();
   const favorite = isFavorite(tool.id);
+  const affiliateOffer = getAffiliateOfferForTool(tool.slug);
 
   useEffect(() => {
     addRecent(tool.id);
@@ -77,7 +80,12 @@ export function ToolLayout({ tool, children }: ToolLayoutProps) {
       </div>
 
       {/* 3. Interactive Calculator Grid (Desktop: 2-column, Mobile: Stacked) */}
-      <div className="mb-14">{children}</div>
+      <div className="mb-8">{children}</div>
+
+      {/* 3.5 Affiliate / Partner Recommendation Card (If Available for this Tool) */}
+      {affiliateOffer && (
+        <AffiliateRecommendationCard offer={affiliateOffer} />
+      )}
 
       {/* 4. Formula & How It Works */}
       {tool.formula && (
